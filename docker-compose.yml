@@ -1,0 +1,109 @@
+services:
+    mariadb:
+        image: mariadb:10.3.39
+        container_name: mariadb
+        volumes:
+            - mariadb:/var/lib/mysql
+            - .docker/mariadb/init:/docker-entrypoint-initdb.d
+        command:
+            - "--default-authentication-plugin=mysql_native_password"
+            - "--max_allowed_packet=1073741824"
+            - "--lower_case_table_names=1"
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_USER: symfony
+            MYSQL_PASSWORD: symfony
+        ports:
+            - "3306:3306"
+        deploy:
+            resources:
+                limits:
+                    cpus: '2'
+                    memory: 2G
+                reservations:
+                    memory: 512M
+
+    php:
+        user: "www-data:www-data"
+        image: git.effetb.com:5050/effetb/docker/php:8.2
+        container_name: php
+        networks:
+            default:
+                aliases:
+                    - docker.local
+        volumes:
+            - .docker/php/cert/mycert.crt:/etc/ssl/certs/mycert.crt
+            - .docker/php/cert/mycert.key:/etc/ssl/private/mycert.key
+            - .docker/php/sites-available/000-default.conf:/etc/apache2/sites-available/000-default.conf
+            - .docker/php/sites-available/default-ssl.conf:/etc/apache2/sites-available/default-ssl.conf
+            - .:/var/www/html
+            - composer:/var/www/.composer
+        environment:
+            - maildev_host=maildev
+            - COMPOSER_HOME=/var/www/.composer
+        command: sh -c 'chmod +x /var/www/html/.docker/php/run.sh && /var/www/html/.docker/php/run.sh'
+        depends_on:
+            - maildev
+            - mariadb
+        ports:
+            - "443:443"
+            - "80:80"
+        deploy:
+            resources:
+                limits:
+                    cpus: '6'
+                    memory: 6G
+                reservations:
+                    memory: 4G
+
+    phpmyadmin:
+        image: git.effetb.com:5050/effetb/studea/studea/phpmyadmin
+        container_name: phpmyadmin
+        volumes:
+            - .docker/php/cert/mycert.crt:/etc/ssl/certs/mycert.crt
+            - .docker/php/cert/mycert.key:/etc/ssl/private/mycert.key
+            - .docker/phpmyadmin/conf/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
+        environment:
+            PMA_HOST: mariadb
+            PMA_PORT: 3306
+        ports:
+            - '8080:443'
+        links:
+            - mariadb
+        deploy:
+            resources:
+                limits:
+                    cpus: '0.5'
+                    memory: 256M
+                reservations:
+                    memory: 128M
+
+    maildev:
+        image: maildev/maildev
+        container_name: maildev
+        restart: always
+        environment:
+            - TZ=Europe/Paris
+            - MAILDEV_WEB_PORT=1080
+            - MAILDEV_SMTP_PORT=25
+        ports:
+            - "8085:1080"
+        deploy:
+            resources:
+                limits:
+                    cpus: '1'
+                    memory: 256M
+                reservations:
+                    memory: 128M
+
+networks:
+    default:
+        ipam:
+            config:
+                -   subnet: 172.27.0.0/16
+                    gateway: 172.27.0.1
+
+
+volumes:
+    composer:
+    mariadb:

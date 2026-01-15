@@ -1,0 +1,10 @@
+services:
+    php:
+        volumes:
+            - $SSH_AUTH_SOCK:/ssh-agent     # Forward local machine SSH key to docker
+        environment:
+            - SSH_AUTH_SOCK=/ssh-agent
+        command: sh -c 'composer install --no-interaction -o && vendor/bin/bdi detect drivers && sudo /usr/sbin/apache2ctl -D FOREGROUND'
+
+    yarn:
+        command: sh -c 'yarn install && yarn encore dev --watch'
