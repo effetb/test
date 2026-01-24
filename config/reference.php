@@ -352,7 +352,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         enabled?: bool|Param, // Default: false
  *     },
  *     serializer?: bool|array{ // Serializer configuration
- *         enabled?: bool|Param, // Default: false
+ *         enabled?: bool|Param, // Default: true
  *         enable_attributes?: bool|Param, // Default: true
  *         name_converter?: scalar|null|Param,
  *         circular_reference_handler?: scalar|null|Param,
@@ -1094,6 +1094,9 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *             filter?: scalar|null|Param, // Default: "({uid_key}={user_identifier})"
  *             password_attribute?: scalar|null|Param, // Default: null
  *         },
+ *         lexik_jwt?: array{
+ *             class?: scalar|null|Param, // Default: "Lexik\\Bundle\\JWTAuthenticationBundle\\Security\\User\\JWTUser"
+ *         },
  *     }>,
  *     firewalls: array<string, array{ // Default: []
  *         pattern?: scalar|null|Param,
@@ -1151,6 +1154,10 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         remote_user?: array{
  *             provider?: scalar|null|Param,
  *             user?: scalar|null|Param, // Default: "REMOTE_USER"
+ *         },
+ *         jwt?: array{
+ *             provider?: scalar|null|Param, // Default: null
+ *             authenticator?: scalar|null|Param, // Default: "lexik_jwt_authentication.security.jwt_authenticator"
  *         },
  *         login_link?: array{
  *             check_route: scalar|null|Param, // Route that will validate the login link - e.g. "app_login_link_verify".
@@ -1351,6 +1358,279 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     }>,
  *     role_hierarchy?: array<string, string|list<scalar|null|Param>>,
  * }
+ * @psalm-type FosRestConfig = array{
+ *     disable_csrf_role?: scalar|null|Param, // Default: null
+ *     unauthorized_challenge?: scalar|null|Param, // Default: null
+ *     param_fetcher_listener?: bool|string|array{
+ *         enabled?: bool|Param, // Default: false
+ *         force?: bool|Param, // Default: false
+ *         service?: scalar|null|Param, // Default: null
+ *     },
+ *     cache_dir?: scalar|null|Param, // Default: "%kernel.cache_dir%/fos_rest"
+ *     allowed_methods_listener?: bool|array{
+ *         enabled?: bool|Param, // Default: false
+ *         service?: scalar|null|Param, // Default: null
+ *     },
+ *     routing_loader?: bool|Param, // Default: false
+ *     body_converter?: bool|array{
+ *         enabled?: bool|Param, // Default: false
+ *         validate?: scalar|null|Param, // Default: false
+ *         validation_errors_argument?: scalar|null|Param, // Default: "validationErrors"
+ *     },
+ *     service?: array{
+ *         serializer?: scalar|null|Param, // Default: null
+ *         view_handler?: scalar|null|Param, // Default: "fos_rest.view_handler.default"
+ *         validator?: scalar|null|Param, // Default: "validator"
+ *     },
+ *     serializer?: array{
+ *         version?: scalar|null|Param, // Default: null
+ *         groups?: list<scalar|null|Param>,
+ *         serialize_null?: bool|Param, // Default: false
+ *     },
+ *     zone?: list<array{ // Default: []
+ *         path?: scalar|null|Param, // use the urldecoded format // Default: null
+ *         host?: scalar|null|Param, // Default: null
+ *         methods?: list<scalar|null|Param>,
+ *         ips?: list<scalar|null|Param>,
+ *     }>,
+ *     view?: array{
+ *         mime_types?: bool|array{
+ *             enabled?: bool|Param, // Default: false
+ *             service?: scalar|null|Param, // Default: null
+ *             formats?: array<string, string|list<scalar|null|Param>>,
+ *         },
+ *         formats?: array<string, bool|Param>,
+ *         view_response_listener?: bool|string|array{
+ *             enabled?: bool|Param, // Default: false
+ *             force?: bool|Param, // Default: false
+ *             service?: scalar|null|Param, // Default: null
+ *         },
+ *         failed_validation?: scalar|null|Param, // Default: 400
+ *         empty_content?: scalar|null|Param, // Default: 204
+ *         serialize_null?: bool|Param, // Default: false
+ *         jsonp_handler?: array{
+ *             callback_param?: scalar|null|Param, // Default: "callback"
+ *             mime_type?: scalar|null|Param, // Default: "application/javascript+jsonp"
+ *         },
+ *     },
+ *     exception?: bool|array{
+ *         enabled?: bool|Param, // Default: false
+ *         map_exception_codes?: bool|Param, // Enables an event listener that maps exception codes to response status codes based on the map configured with the "fos_rest.exception.codes" option. // Default: false
+ *         exception_listener?: bool|Param, // Default: false
+ *         serialize_exceptions?: bool|Param, // Default: false
+ *         flatten_exception_format?: "legacy"|"rfc7807"|Param, // Default: "legacy"
+ *         serializer_error_renderer?: bool|Param, // Default: false
+ *         codes?: array<string, int|Param>,
+ *         messages?: array<string, bool|Param>,
+ *         debug?: bool|Param, // Default: true
+ *     },
+ *     body_listener?: bool|array{
+ *         enabled?: bool|Param, // Default: false
+ *         service?: scalar|null|Param, // Default: null
+ *         default_format?: scalar|null|Param, // Default: null
+ *         throw_exception_on_unsupported_content_type?: bool|Param, // Default: false
+ *         decoders?: array<string, scalar|null|Param>,
+ *         array_normalizer?: string|array{
+ *             service?: scalar|null|Param, // Default: null
+ *             forms?: bool|Param, // Default: false
+ *         },
+ *     },
+ *     format_listener?: bool|array{
+ *         enabled?: bool|Param, // Default: false
+ *         service?: scalar|null|Param, // Default: null
+ *         rules?: list<array{ // Default: []
+ *             path?: scalar|null|Param, // URL path info // Default: null
+ *             host?: scalar|null|Param, // URL host name // Default: null
+ *             methods?: mixed, // Method for URL // Default: null
+ *             attributes?: array<string, mixed>,
+ *             stop?: bool|Param, // Default: false
+ *             prefer_extension?: bool|Param, // Default: true
+ *             fallback_format?: scalar|null|Param, // Default: "html"
+ *             priorities?: list<scalar|null|Param>,
+ *         }>,
+ *     },
+ *     versioning?: bool|array{
+ *         enabled?: bool|Param, // Default: false
+ *         default_version?: scalar|null|Param, // Default: null
+ *         resolvers?: array{
+ *             query?: bool|array{
+ *                 enabled?: bool|Param, // Default: true
+ *                 parameter_name?: scalar|null|Param, // Default: "version"
+ *             },
+ *             custom_header?: bool|array{
+ *                 enabled?: bool|Param, // Default: true
+ *                 header_name?: scalar|null|Param, // Default: "X-Accept-Version"
+ *             },
+ *             media_type?: bool|array{
+ *                 enabled?: bool|Param, // Default: true
+ *                 regex?: scalar|null|Param, // Default: "/(v|version)=(?P<version>[0-9\\.]+)/"
+ *             },
+ *         },
+ *         guessing_order?: list<scalar|null|Param>,
+ *     },
+ * }
+ * @psalm-type NelmioApiDocConfig = array{
+ *     type_info?: bool|Param, // Use the symfony/type-info component for determining types. // Default: false
+ *     use_validation_groups?: bool|Param, // If true, `groups` passed to #[Model] attributes will be used to limit validation constraints // Default: false
+ *     operation_id_generation?: \Nelmio\ApiDocBundle\Describer\OperationIdGeneration::ALWAYS_PREPEND|\Nelmio\ApiDocBundle\Describer\OperationIdGeneration::CONDITIONALLY_PREPEND|\Nelmio\ApiDocBundle\Describer\OperationIdGeneration::NO_PREPEND|"always_prepend"|"conditionally_prepend"|"no_prepend"|Param, // How to generate operation ids // Default: "always_prepend"
+ *     cache?: array{
+ *         pool?: scalar|null|Param, // define cache pool to use // Default: null
+ *         item_id?: scalar|null|Param, // define cache item id // Default: null
+ *     },
+ *     documentation?: array<string, mixed>,
+ *     media_types?: list<scalar|null|Param>,
+ *     html_config?: array{ // UI configuration options
+ *         assets_mode?: scalar|null|Param, // Default: "cdn"
+ *         swagger_ui_config?: array<mixed>,
+ *         redocly_config?: array<mixed>,
+ *         stoplight_config?: array<mixed>,
+ *     },
+ *     areas?: array<string, array{ // Default: {"default":{"path_patterns":[],"host_patterns":[],"with_attribute":false,"documentation":[],"name_patterns":[],"disable_default_routes":false,"cache":[],"security":[]}}
+ *         path_patterns?: list<scalar|null|Param>,
+ *         host_patterns?: list<scalar|null|Param>,
+ *         name_patterns?: list<scalar|null|Param>,
+ *         security?: array<string, array{ // Default: []
+ *             type?: scalar|null|Param,
+ *             scheme?: scalar|null|Param,
+ *             in?: scalar|null|Param,
+ *             name?: scalar|null|Param,
+ *             description?: scalar|null|Param,
+ *             openIdConnectUrl?: scalar|null|Param,
+ *             ...<mixed>
+ *         }>,
+ *         with_attribute?: bool|Param, // whether to filter by attributes // Default: false
+ *         disable_default_routes?: bool|Param, // if set disables default routes without attributes // Default: false
+ *         documentation?: array<string, mixed>,
+ *         cache?: array{
+ *             pool?: scalar|null|Param, // define cache pool to use // Default: null
+ *             item_id?: scalar|null|Param, // define cache item id // Default: null
+ *         },
+ *     }>,
+ *     models?: array{
+ *         use_jms?: bool|Param, // Default: false
+ *         names?: list<array{ // Default: []
+ *             alias: scalar|null|Param,
+ *             type: scalar|null|Param,
+ *             groups?: mixed, // Default: null
+ *             options?: mixed, // Default: null
+ *             serializationContext?: list<mixed>,
+ *             areas?: list<scalar|null|Param>,
+ *         }>,
+ *     },
+ * }
+ * @psalm-type NelmioCorsConfig = array{
+ *     defaults?: array{
+ *         allow_credentials?: bool|Param, // Default: false
+ *         allow_origin?: list<scalar|null|Param>,
+ *         allow_headers?: list<scalar|null|Param>,
+ *         allow_methods?: list<scalar|null|Param>,
+ *         allow_private_network?: bool|Param, // Default: false
+ *         expose_headers?: list<scalar|null|Param>,
+ *         max_age?: scalar|null|Param, // Default: 0
+ *         hosts?: list<scalar|null|Param>,
+ *         origin_regex?: bool|Param, // Default: false
+ *         forced_allow_origin_value?: scalar|null|Param, // Default: null
+ *         skip_same_as_origin?: bool|Param, // Default: true
+ *     },
+ *     paths?: array<string, array{ // Default: []
+ *         allow_credentials?: bool|Param,
+ *         allow_origin?: list<scalar|null|Param>,
+ *         allow_headers?: list<scalar|null|Param>,
+ *         allow_methods?: list<scalar|null|Param>,
+ *         allow_private_network?: bool|Param,
+ *         expose_headers?: list<scalar|null|Param>,
+ *         max_age?: scalar|null|Param, // Default: 0
+ *         hosts?: list<scalar|null|Param>,
+ *         origin_regex?: bool|Param,
+ *         forced_allow_origin_value?: scalar|null|Param, // Default: null
+ *         skip_same_as_origin?: bool|Param,
+ *     }>,
+ * }
+ * @psalm-type LexikJwtAuthenticationConfig = array{
+ *     public_key?: scalar|null|Param, // The key used to sign tokens (useless for HMAC). If not set, the key will be automatically computed from the secret key. // Default: null
+ *     additional_public_keys?: list<scalar|null|Param>,
+ *     secret_key?: scalar|null|Param, // The key used to sign tokens. It can be a raw secret (for HMAC), a raw RSA/ECDSA key or the path to a file itself being plaintext or PEM. // Default: null
+ *     pass_phrase?: scalar|null|Param, // The key passphrase (useless for HMAC) // Default: ""
+ *     token_ttl?: scalar|null|Param, // Default: 3600
+ *     allow_no_expiration?: bool|Param, // Allow tokens without "exp" claim (i.e. indefinitely valid, no lifetime) to be considered valid. Caution: usage of this should be rare. // Default: false
+ *     clock_skew?: scalar|null|Param, // Default: 0
+ *     encoder?: array{
+ *         service?: scalar|null|Param, // Default: "lexik_jwt_authentication.encoder.lcobucci"
+ *         signature_algorithm?: scalar|null|Param, // Default: "RS256"
+ *     },
+ *     user_id_claim?: scalar|null|Param, // Default: "username"
+ *     token_extractors?: array{
+ *         authorization_header?: bool|array{
+ *             enabled?: bool|Param, // Default: true
+ *             prefix?: scalar|null|Param, // Default: "Bearer"
+ *             name?: scalar|null|Param, // Default: "Authorization"
+ *         },
+ *         cookie?: bool|array{
+ *             enabled?: bool|Param, // Default: false
+ *             name?: scalar|null|Param, // Default: "BEARER"
+ *         },
+ *         query_parameter?: bool|array{
+ *             enabled?: bool|Param, // Default: false
+ *             name?: scalar|null|Param, // Default: "bearer"
+ *         },
+ *         split_cookie?: bool|array{
+ *             enabled?: bool|Param, // Default: false
+ *             cookies?: list<scalar|null|Param>,
+ *         },
+ *     },
+ *     remove_token_from_body_when_cookies_used?: scalar|null|Param, // Default: true
+ *     set_cookies?: array<string, array{ // Default: []
+ *         lifetime?: scalar|null|Param, // The cookie lifetime. If null, the "token_ttl" option value will be used // Default: null
+ *         samesite?: "none"|"lax"|"strict"|Param, // Default: "lax"
+ *         path?: scalar|null|Param, // Default: "/"
+ *         domain?: scalar|null|Param, // Default: null
+ *         secure?: scalar|null|Param, // Default: true
+ *         httpOnly?: scalar|null|Param, // Default: true
+ *         partitioned?: scalar|null|Param, // Default: false
+ *         split?: list<scalar|null|Param>,
+ *     }>,
+ *     api_platform?: bool|array{ // API Platform compatibility: add check_path in OpenAPI documentation.
+ *         enabled?: bool|Param, // Default: false
+ *         check_path?: scalar|null|Param, // The login check path to add in OpenAPI. // Default: null
+ *         username_path?: scalar|null|Param, // The path to the username in the JSON body. // Default: null
+ *         password_path?: scalar|null|Param, // The path to the password in the JSON body. // Default: null
+ *     },
+ *     access_token_issuance?: bool|array{
+ *         enabled?: bool|Param, // Default: false
+ *         signature?: array{
+ *             algorithm: scalar|null|Param, // The algorithm use to sign the access tokens.
+ *             key: scalar|null|Param, // The signature key. It shall be JWK encoded.
+ *         },
+ *         encryption?: bool|array{
+ *             enabled?: bool|Param, // Default: false
+ *             key_encryption_algorithm: scalar|null|Param, // The key encryption algorithm is used to encrypt the token.
+ *             content_encryption_algorithm: scalar|null|Param, // The key encryption algorithm is used to encrypt the token.
+ *             key: scalar|null|Param, // The encryption key. It shall be JWK encoded.
+ *         },
+ *     },
+ *     access_token_verification?: bool|array{
+ *         enabled?: bool|Param, // Default: false
+ *         signature?: array{
+ *             header_checkers?: list<scalar|null|Param>,
+ *             claim_checkers?: list<scalar|null|Param>,
+ *             mandatory_claims?: list<scalar|null|Param>,
+ *             allowed_algorithms?: list<scalar|null|Param>,
+ *             keyset: scalar|null|Param, // The signature keyset. It shall be JWKSet encoded.
+ *         },
+ *         encryption?: bool|array{
+ *             enabled?: bool|Param, // Default: false
+ *             continue_on_decryption_failure?: bool|Param, // If enable, non-encrypted tokens or tokens that failed during decryption or verification processes are accepted. // Default: false
+ *             header_checkers?: list<scalar|null|Param>,
+ *             allowed_key_encryption_algorithms?: list<scalar|null|Param>,
+ *             allowed_content_encryption_algorithms?: list<scalar|null|Param>,
+ *             keyset: scalar|null|Param, // The encryption keyset. It shall be JWKSet encoded.
+ *         },
+ *     },
+ *     blocklist_token?: bool|array{
+ *         enabled?: bool|Param, // Default: false
+ *         cache?: scalar|null|Param, // Storage to track blocked tokens // Default: "cache.app"
+ *     },
+ * }
  * @psalm-type ConfigType = array{
  *     imports?: ImportsConfig,
  *     parameters?: ParametersConfig,
@@ -1362,6 +1642,10 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     twig_extra?: TwigExtraConfig,
  *     twig_component?: TwigComponentConfig,
  *     security?: SecurityConfig,
+ *     fos_rest?: FosRestConfig,
+ *     nelmio_api_doc?: NelmioApiDocConfig,
+ *     nelmio_cors?: NelmioCorsConfig,
+ *     lexik_jwt_authentication?: LexikJwtAuthenticationConfig,
  *     "when@dev"?: array{
  *         imports?: ImportsConfig,
  *         parameters?: ParametersConfig,
@@ -1374,6 +1658,10 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         twig_extra?: TwigExtraConfig,
  *         twig_component?: TwigComponentConfig,
  *         security?: SecurityConfig,
+ *         fos_rest?: FosRestConfig,
+ *         nelmio_api_doc?: NelmioApiDocConfig,
+ *         nelmio_cors?: NelmioCorsConfig,
+ *         lexik_jwt_authentication?: LexikJwtAuthenticationConfig,
  *     },
  *     "when@prod"?: array{
  *         imports?: ImportsConfig,
@@ -1386,6 +1674,10 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         twig_extra?: TwigExtraConfig,
  *         twig_component?: TwigComponentConfig,
  *         security?: SecurityConfig,
+ *         fos_rest?: FosRestConfig,
+ *         nelmio_api_doc?: NelmioApiDocConfig,
+ *         nelmio_cors?: NelmioCorsConfig,
+ *         lexik_jwt_authentication?: LexikJwtAuthenticationConfig,
  *     },
  *     "when@test"?: array{
  *         imports?: ImportsConfig,
@@ -1398,6 +1690,10 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         twig_extra?: TwigExtraConfig,
  *         twig_component?: TwigComponentConfig,
  *         security?: SecurityConfig,
+ *         fos_rest?: FosRestConfig,
+ *         nelmio_api_doc?: NelmioApiDocConfig,
+ *         nelmio_cors?: NelmioCorsConfig,
+ *         lexik_jwt_authentication?: LexikJwtAuthenticationConfig,
  *     },
  *     ...<string, ExtensionType|array{ // extra keys must follow the when@%env% pattern or match an extension alias
  *         imports?: ImportsConfig,

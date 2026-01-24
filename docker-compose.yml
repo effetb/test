@@ -32,14 +32,17 @@ services:
                 aliases:
                     - docker.local
         volumes:
+            - .docker/php/.bash:/var/www/.bash
             - .docker/php/cert/mycert.crt:/etc/ssl/certs/mycert.crt
             - .docker/php/cert/mycert.key:/etc/ssl/private/mycert.key
             - .docker/php/sites-available/000-default.conf:/etc/apache2/sites-available/000-default.conf
             - .docker/php/sites-available/default-ssl.conf:/etc/apache2/sites-available/default-ssl.conf
             - .:/var/www/html
+            - .docker/php/profile/.bash_history:/var/www/.bash_history
             - composer:/var/www/.composer
         environment:
             - maildev_host=maildev
+            - PROMPT_COMMAND=history -a
             - COMPOSER_HOME=/var/www/.composer
         command: sh -c 'chmod +x /var/www/html/.docker/php/run.sh && /var/www/html/.docker/php/run.sh'
         depends_on:
