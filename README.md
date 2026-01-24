@@ -52,6 +52,10 @@ docker-compose up -d
 docker-compose exec php bin/console doctrine:fixtures:load
 ```
 
+Ou utilisation du plugin Docker dans PHPStorm.
+
+
+
 ### Accéder au terminal Docker avec PHPStorm
 
 #### Méthode 1 : Via le terminal intégré
@@ -68,21 +72,9 @@ docker-compose exec php bash
 1. Ouvrir la vue Docker (`View > Tool Windows > Services` ou `Alt + 8`)
 2. Dans l'arborescence, dérouler `Docker > Containers`
 3. Trouver le conteneur PHP (généralement nommé `[projet]_php_1`)
-4. Clic droit sur le conteneur > `Exec > Create...`
-5. Dans la fenêtre qui s'ouvre, saisir `/bin/bash` comme commande
-6. Cliquer sur `Run`
-7. Un terminal s'ouvre directement dans le conteneur
+4. Clic droit sur le conteneur > `Create terminal > As Container User`
+7. Un terminal s'ouvre directement dans le conteneur dans le dossier source (/var/www/html)
 
-#### Méthode 3 : Configuration d'un interpréteur PHP distant (recommandé)
-
-1. `File > Settings > PHP`
-2. Cliquer sur `...` à côté de `CLI Interpreter`
-3. Cliquer sur `+` > `From Docker, Vagrant, VM, WSL...`
-4. Sélectionner `Docker Compose`
-5. Choisir le service `php` dans le fichier `docker-compose.yml`
-6. Valider
-
-Une fois configuré, vous pouvez exécuter les commandes Symfony directement depuis PHPStorm.
 
 ---
 
