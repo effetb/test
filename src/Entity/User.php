@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Attribute\Ignore;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -20,12 +21,16 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank()]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank()]
     private ?string $lastName = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\Email()]
+    #[Assert\NotBlank()]
     private ?string $email = null;
 
     /**
@@ -36,6 +41,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     private Collection $events;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank()]
     private ?string $password = null;
 
     public function __construct()
