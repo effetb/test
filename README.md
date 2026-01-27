@@ -6,7 +6,7 @@ Ce test technique a pour objectif d'évaluer vos compétences en développement 
 
 Vous disposerez d'un environnement de développement complet comprenant :
 - Un backend Symfony 7.4 avec une API REST
-- Un frontend Vue.js
+- Un frontend Vue.js dans le dossier front
 - Un environnement Docker avec PHP, MariaDB et PHPMyAdmin
 
 ### Architecture technique
@@ -50,6 +50,11 @@ docker-compose up -d
 
 # Créer la base de données et charger les fixtures
 docker-compose exec php bin/console doctrine:fixtures:load
+
+# Démarrer le front (depuis le terminal phpstorm)
+Compléter la variable environnement VITE_API_USERNAME avec un des identifiants chargé par le fixtures load.
+cd front
+yarn serve
 ```
 
 Ou utilisation du plugin Docker dans PHPStorm.
@@ -148,23 +153,24 @@ Modifier l'affichage de la liste des événements pour ajouter une pastille de c
 
 Ajouter un bouton "Voir" ou "Détails" sur chaque événement :
 - Au clic, récupérer les détails de l'événement via la route GET créée précédemment
-- Afficher les informations dans une modale
+- Afficher les informations dans une nouvelle page
 
 **Livrables** :
 - Bouton ajouté sur chaque événement
-- Modale créée pour afficher les détails
+- Page créée pour afficher les détails
 - Appel à l'API GET /events/{id}
 
 #### 2.3 - Modification d'un événement
 
-Dans la modale, permettre la modification de l'événement :
+Dans la page, permettre la modification de l'événement :
 - Champs modifiables : titre, description, couleur
 - Afficher un sélecteur pour la couleur avec uniquement les 3 valeurs autorisées
 - Bouton "Enregistrer" qui envoie les modifications via la route POST
 - Validation côté client pour s'assurer que seules les couleurs autorisées sont envoyées
 
 **Livrables** :
-- Formulaire de modification dans la modale
+
+- Formulaire de modification dans une nouvelle page
 - Validation des données
 - Appel à l'API POST /events/{id}
 - Gestion des erreurs (affichage de messages appropriés)

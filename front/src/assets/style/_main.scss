@@ -1,0 +1,83 @@
+body
+{
+	color       : #26474E;
+	font-family : "Roboto", sans-serif;
+}
+
+.container
+{
+	border-radius : 20px;
+	margin        : auto;
+	max-width     : 1200px;
+	padding       : 0 30px;
+}
+
+.btn
+{
+	align-items     : center;
+	background      : #26474E;
+	border          : 1px solid #26474E;
+	border-radius   : 5px;
+	color           : #fff;
+	cursor          : pointer;
+	display         : inline-flex;
+	font-size       : 13px;
+	justify-content : center;
+	min-width       : 80px;
+	padding         : 5px;
+	text-decoration : none;
+}
+
+.header
+{
+	align-items     : center;
+	display         : flex;
+	justify-content : space-between;
+	padding         : 0 25px;
+}
+
+.card
+{
+	border        : 1px solid #26474E;
+	border-radius : 15px;
+	width         : 100%;
+
+	&__body
+	{
+		padding : 10px 25px;
+	}
+
+	&__item
+	{
+		align-items     : center;
+		display         : flex;
+		justify-content : space-between;
+		padding         : 8px 0;
+	}
+
+	&__item + &__item
+	{
+		border-top : 1px dashed #26474E;
+	}
+}
+
+.form-group
+{
+	display        : flex;
+	flex-direction : column;
+	margin-bottom  : 15px;
+}
+
+
+.form-label
+{
+	font-weight   : 700;
+	margin-bottom : 5px;
+}
+
+.form-control
+{
+	border        : 1px solid #26474E;
+	border-radius : 5px;
+	height        : 40px;
+}

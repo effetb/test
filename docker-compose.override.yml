@@ -5,15 +5,15 @@ secrets:
 services:
     php:
         secrets:
-            -   source: ssh_key
-                target: /var/www/.ssh/id_rsa
+        -   source: ssh_key
+            target: /var/www/.ssh/id_rsa
         environment:
             SSH_AUTH_SOCK: /ssh-agent
         volumes:
-            - ${SSH_AUTH_SOCK}:/ssh-agent # Forward local machine SSH key to docker
-            - /run/media/studea:/var/studea
+        - ${SSH_AUTH_SOCK}:/ssh-agent # Forward local machine SSH key to docker
+        - /run/media/studea:/var/studea
         extra_hosts:
-            - "studeav3.local:172.25.0.102"
+        - "studeav3.local:172.25.0.102"
         networks:
             default:
                 ipv4_address: 172.25.0.102
