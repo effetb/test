@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <table>
+        <tr>
+            <th>Titre</th>
+            <th>Créateur</th>
+        </tr>
+        {% for event in events %}
+            <tr>
+                <td>{{ event.title }}</td>
+                <td>{{ event.creator.firstName }} {{ event.creator.lastName }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

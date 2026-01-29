@@ -15,6 +15,8 @@ class AppFixtures extends Fixture
     {
         $generator = Factory::create('fr_FR');
         $populator = new Populator($generator, $manager);
+        $populator->addEntity(User::class, 1, [ 'email' => 'admin@effetb.com', 'password' => 'admin']);
+        $populator->execute();
         $populator->addEntity(User::class, 3, [ 'password' => 'admin']);
         $populator->addEntity(Event::class, 50, [
             'title' => function () use ($generator) {
