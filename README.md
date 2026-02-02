@@ -45,8 +45,17 @@ Vous disposerez d'un environnement de développement complet comprenant :
 # Démarrer les conteneurs Docker
 docker-compose up -d
 
-# Créer la base de données et charger les fixtures
-docker-compose exec php bin/console doctrine:fixtures:load
+# Installer les vendors
+docker exec -it php composer install
+
+# Installer yarn encore
+docker exec -it php yarn install
+
+# Build les assets
+docker exec -it php yarn encore dev
+
+# Charge les fixtures
+docker exec -it php bin/console doctrine:fixtures:load
 ````
 
 Ou utilisation du plugin Docker dans PHPStorm.
