@@ -25,7 +25,7 @@ services:
 
     php:
         user: "www-data:www-data"
-        image: git.effetb.com:5050/effetb/docker/php:8.2
+        build: .docker/php
         container_name: php
         networks:
             default:
@@ -60,7 +60,7 @@ services:
                     memory: 4G
 
     phpmyadmin:
-        image: git.effetb.com:5050/effetb/studea/studea/phpmyadmin
+        build: .docker/phpmyadmin
         container_name: phpmyadmin
         volumes:
             - .docker/php/cert/mycert.crt:/etc/ssl/certs/mycert.crt
@@ -103,8 +103,8 @@ networks:
     default:
         ipam:
             config:
-                -   subnet: 172.27.0.0/16
-                    gateway: 172.27.0.1
+                -   subnet: 172.28.0.0/16
+                    gateway: 172.28.0.1
 
 
 volumes:

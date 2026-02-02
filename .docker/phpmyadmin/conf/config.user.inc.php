@@ -1,4 +1,12 @@
 <?php
+/*
+ * Ofa Link - config.user.inc.php
+ *
+ * @copyright Copyright (c) 2023. Effet B
+ *
+ * @licence   Effet B <contact@effetb.com>
+ *
+ */
 
 $cfg['DefaultLang'] = 'fr';
 $cfg['Lang'] = 'fr';
