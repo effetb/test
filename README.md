@@ -23,15 +23,14 @@ Vous disposerez d'un environnement de développement complet comprenant :
 - 2 entités principales : `User` et `Event`
 - Les événements sont liés aux utilisateurs via la propriété `$creator`
 
-**Frontend (Vue.js)**
-- Application Vue.js basique connectée à l'API
+**Frontend**
+- Application Twig
 - Affichage de la liste des événements
 
 ### URLs d'accès
 
 - **Application frontend** : `http://docker.local`
 - **Interface EasyAdmin** : `http://docker.local/admin`
-- **Documentation API** : `http://docker.local/api/doc`
 - **PHPMyAdmin** : `https://docker.local:8080`
 
 ---
@@ -50,12 +49,6 @@ docker-compose up -d
 
 # Créer la base de données et charger les fixtures
 docker-compose exec php bin/console doctrine:fixtures:load
-
-# Démarrer le front (depuis le terminal phpstorm)
-Compléter la variable environnement VITE_API_USERNAME avec un des identifiants chargé par le fixtures load.
-cd front
-yarn serve
-```
 
 Ou utilisation du plugin Docker dans PHPStorm.
 
@@ -104,7 +97,14 @@ Ajouter une propriété `color` à l'entité `Event` avec les contraintes suivan
 
 Modifier la route existante qui renvoie la liste des événements pour :
 - Ne retourner que les événements du mois en cours
-- Ne retourner que les événements dont le `creator` correspond à l'utilisateur connecté (via le JWT)
+- Ne retourner que les événements dont le `creator` correspond à l'utilisateur ayant pour e-mail admin@effetb.com
+
+Modifier l'affichage de la liste des événements pour ajouter une pastille de couleur :
+- Afficher une pastille colorée à côté de chaque événement
+- La couleur de la pastille doit correspondre à la propriété `color` de l'événement
+
+Ajouter un bouton "Voir" ou "Détails" sur chaque événement :
+- Au clic, aller sur la route suivante (voir 1.3)
 
 **Livrables** :
 - Route GET optimisée avec les filtres demandés
@@ -112,55 +112,11 @@ Modifier la route existante qui renvoie la liste des événements pour :
 
 #### 1.3 - Route GET /events/{id}
 
-Créer une nouvelle route pour récupérer les détails d'un événement unique :
+Créer une nouvelle route pour afficher les détails d'un événement unique dans un formulaire :
 - Méthode : GET
 - Paramètre : ID de l'événement
-- Sécurité : retourner une erreur 403 si l'événement n'appartient pas à l'utilisateur connecté
+- Sécurité : retourner une erreur 403 si l'événement n'appartient pas à l'utilisateur ayant pour e-mail admin@effetb.com
 - Retourner une erreur 404 si l'événement n'existe pas
-
-**Livrables** :
-- Route GET créée avec la sécurité implémentée
-- Documentation de l'API mise à jour
-
-#### 1.4 - Route POST /events/{id}
-
-Créer une route pour mettre à jour un événement existant :
-- Méthode : POST (ou PUT/PATCH selon votre préférence)
-- Paramètre : ID de l'événement
-- Body : JSON avec les champs modifiables (titre, description, couleur)
-- Sécurité : vérifier que l'utilisateur connecté est bien le créateur de l'événement
-- Validation : s'assurer que la couleur fait partie des valeurs autorisées
-
-**Livrables** :
-- Route POST créée avec validation et sécurité
-- Gestion des erreurs appropriée (403, 404, 400)
-- Documentation de l'API mise à jour
-
----
-
-### Partie 2 : Frontend Vue.js
-
-#### 2.1 - Affichage des couleurs
-
-Modifier l'affichage de la liste des événements pour ajouter une pastille de couleur :
-- Afficher une pastille colorée à côté de chaque événement
-- La couleur de la pastille doit correspondre à la propriété `color` de l'événement
-
-**Livrables** :
-- Composant Vue.js modifié avec affichage des pastilles
-
-#### 2.2 - Visualisation d'un événement
-
-Ajouter un bouton "Voir" ou "Détails" sur chaque événement :
-- Au clic, récupérer les détails de l'événement via la route GET créée précédemment
-- Afficher les informations dans une nouvelle page
-
-**Livrables** :
-- Bouton ajouté sur chaque événement
-- Page créée pour afficher les détails
-- Appel à l'API GET /events/{id}
-
-#### 2.3 - Modification d'un événement
 
 Dans la page, permettre la modification de l'événement :
 - Champs modifiables : titre, description, couleur
@@ -168,13 +124,18 @@ Dans la page, permettre la modification de l'événement :
 - Bouton "Enregistrer" qui envoie les modifications via la route POST
 - Validation côté client pour s'assurer que seules les couleurs autorisées sont envoyées
 
-**Livrables** :
+#### 1.4 - Route POST /events/{id}
 
-- Formulaire de modification dans une nouvelle page
-- Validation des données
-- Appel à l'API POST /events/{id}
-- Gestion des erreurs (affichage de messages appropriés)
-- Rafraîchissement de la liste après modification
+Créer une route pour mettre à jour un événement existant en lui passant le formulaire développer précédemment :
+- Méthode : POST
+- Paramètre : ID de l'événement
+- Body : le formulaire
+- Validation : s'assurer que la couleur fait partie des valeurs autorisées
+
+**Livrables** :
+- Route POST créée avec validation et sécurité
+- Gestion des erreurs appropriée (403, 404, 400)
+- Documentation de l'API mise à jour
 
 ---
 
@@ -201,11 +162,6 @@ Dans la page, permettre la modification de l'événement :
 - N'hésitez pas à utiliser les outils de debug de Symfony (Profiler, var_dump, etc.)
 - Testez vos endpoints avec un client REST (Postman, Insomnia, ou directement via Nelmio)
 
----
-
-## Durée estimée
-
-2 à 3 heures selon votre niveau d'expérience.
 
 ---
 
