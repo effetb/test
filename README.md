@@ -1,20 +1,17 @@
-# Test technique - Développeur Fullstack Symfony / Vue.js
+# Test technique - Développeur Fullstack Symfony / Twig
 
 ## Présentation du projet
 
-Ce test technique a pour objectif d'évaluer vos compétences en développement fullstack avec Symfony et Vue.js.
+Ce test technique a pour objectif d'évaluer vos compétences en développement fullstack avec Symfony et Twig
 
 Vous disposerez d'un environnement de développement complet comprenant :
-- Un backend Symfony 7.4 avec une API REST
+- Un backend Symfony 7.4 avec une interface d'administration EasyAdmin
 - Un frontend Vue.js dans le dossier front
 - Un environnement Docker avec PHP, MariaDB et PHPMyAdmin
 
 ### Architecture technique
 
 **Backend (Symfony 7.4)**
-- FosRestBundle pour l'API REST
-- NelmioApiDocBundle pour la documentation automatique
-- LexikJWTAuthenticationBundle pour l'authentification JWT
 - EasyAdmin pour l'interface d'administration
 - Fixtures pour générer des données de test
 
@@ -40,6 +37,7 @@ Vous disposerez d'un environnement de développement complet comprenant :
 ### Prérequis
 - Docker et Docker Compose installés
 - PHPStorm (recommandé)
+- Créer une branche à votre nom pour pouvoir faire une merge request
 
 ### Démarrage du projet
 
@@ -49,10 +47,9 @@ docker-compose up -d
 
 # Créer la base de données et charger les fixtures
 docker-compose exec php bin/console doctrine:fixtures:load
+````
 
 Ou utilisation du plugin Docker dans PHPStorm.
-
-
 
 ### Accéder au terminal Docker avec PHPStorm
 
@@ -60,6 +57,7 @@ Ou utilisation du plugin Docker dans PHPStorm.
 
 1. Ouvrir le terminal PHPStorm (`Alt + F12` ou via le menu `View > Tool Windows > Terminal`)
 2. Exécuter la commande suivante :
+
 ```bash
 docker-compose exec php bash
 ```
@@ -95,9 +93,9 @@ Ajouter une propriété `color` à l'entité `Event` avec les contraintes suivan
 
 #### 1.2 - Optimisation de la route GET /events
 
-Modifier la route existante qui renvoie la liste des événements pour :
+Modifier la route existante dans le controller `src/Controller/Front/EventController.php` qui renvoie la liste des événements pour :
 - Ne retourner que les événements du mois en cours
-- Ne retourner que les événements dont le `creator` correspond à l'utilisateur ayant pour e-mail admin@effetb.com
+- Ne retourner que les événements dont le `creator` correspond à l'utilisateur ayant pour e-mail `admin@effetb.com`
 
 Modifier l'affichage de la liste des événements pour ajouter une pastille de couleur :
 - Afficher une pastille colorée à côté de chaque événement
@@ -112,10 +110,10 @@ Ajouter un bouton "Voir" ou "Détails" sur chaque événement :
 
 #### 1.3 - Route GET /events/{id}
 
-Créer une nouvelle route pour afficher les détails d'un événement unique dans un formulaire :
+Créer une nouvelle route dans le même controller pour afficher les détails d'un événement unique dans un formulaire Symfony :
 - Méthode : GET
 - Paramètre : ID de l'événement
-- Sécurité : retourner une erreur 403 si l'événement n'appartient pas à l'utilisateur ayant pour e-mail admin@effetb.com
+- Sécurité : retourner une erreur 403 si l'événement n'appartient pas à l'utilisateur ayant pour e-mail `admin@effetb.com`
 - Retourner une erreur 404 si l'événement n'existe pas
 
 Dans la page, permettre la modification de l'événement :
@@ -141,12 +139,12 @@ Créer une route pour mettre à jour un événement existant en lui passant le f
 
 ## Critères d'évaluation
 
-- **Code propre et structuré** : respect des conventions Symfony et Vue.js
-- **Sécurité** : gestion correcte de l'authentification et des autorisations
+- **Code propre et structuré** : respect des conventions Symfony
+- **Sécurité** : gestion correcte de des autorisations
 - **Validation** : validation des données côté backend et frontend
 - **Gestion des erreurs** : messages d'erreur appropriés et UX fluide
 - **Tests** : bonus si vous ajoutez des tests unitaires ou fonctionnels
-- **Documentation** : code commenté si nécessaire, annotations API à jour
+- **Documentation** : code commenté si nécessaire
 
 ---
 
@@ -158,16 +156,15 @@ Créer une route pour mettre à jour un événement existant en lui passant le f
   docker-compose exec php bin/console doctrine:migrations:migrate
   docker-compose exec php bin/console doctrine:fixtures:load
   ```
-- Consultez la documentation de l'API sur `/api/doc` pour tester vos endpoints
+  
 - N'hésitez pas à utiliser les outils de debug de Symfony (Profiler, var_dump, etc.)
-- Testez vos endpoints avec un client REST (Postman, Insomnia, ou directement via Nelmio)
 
 
 ---
 
 ## Rendu
 
-Commitez et pushez votre travail sur le dépôt Git fourni. Assurez-vous que :
+Commitez et pushez votre travail dans une merge request sur le dépôt Git fourni. Assurez-vous que :
 - Les migrations sont incluses dans le dépôt
 - Les fixtures sont à jour
 - Le code frontend est prêt à être testé
