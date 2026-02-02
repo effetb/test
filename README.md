@@ -54,6 +54,9 @@ docker exec -it php yarn install
 # Build les assets
 docker exec -it php yarn encore dev
 
+# Construire la base de données
+docker exec -it php bin/console doctrine:migrations:migrate
+
 # Charge les fixtures
 docker exec -it php bin/console doctrine:fixtures:load
 ````
