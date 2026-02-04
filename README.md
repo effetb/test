@@ -64,8 +64,10 @@ docker exec -it php bin/console doctrine:migrations:migrate
 # Charge les fixtures
 docker exec -it php bin/console doctrine:fixtures:load
 
+# Générer les clefs JWT
+php bin/console lexik:jwt:generate-keypair
+
 # Démarrer le front (depuis le terminal phpstorm)
-Compléter la variable environnement VITE_API_USERNAME avec un des identifiants chargé par le fixtures load.
 cd front
 yarn serve
 ````
