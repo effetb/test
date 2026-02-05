@@ -44,7 +44,7 @@ services:
             - maildev_host=maildev
             - PROMPT_COMMAND=history -a
             - COMPOSER_HOME=/var/www/.composer
-        command: sh -c 'chmod +x /var/www/html/.docker/php/run.sh && /var/www/html/.docker/php/run.sh'
+        command: sh -c 'sudo /usr/sbin/apache2ctl -D FOREGROUND'
         depends_on:
             - maildev
             - mariadb
