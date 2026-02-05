@@ -67,7 +67,7 @@ docker exec -it php bin/console doctrine:fixtures:load
 # Générer les clefs JWT
 php bin/console lexik:jwt:generate-keypair
 
-# Démarrer le front (depuis le terminal phpstorm)
+# Démarrer le front (depuis le terminal phpstorm)a
 cd front
 yarn serve
 ````
