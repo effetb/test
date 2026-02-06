@@ -13,6 +13,7 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
+        $colors = ['rouge', 'bleu', 'vert'];
         $generator = Factory::create('fr_FR');
         $populator = new Populator($generator, $manager);
         $populator->addEntity(User::class, 1, [ 'email' => 'admin@effetb.com', 'password' => 'admin']);
@@ -59,6 +60,7 @@ class AppFixtures extends Fixture
                     (clone $startDate)->modify('+2 months')
                 );
             },
+            'color' => fn() use ($colors, $generator) => $generator->randomElement($colors),
         ]);
         $populator->execute();
     }
