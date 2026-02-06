@@ -6,6 +6,11 @@ class ApiConnection {
 		return this.fetchApi("GET", path);
 	}
 
+	post(path, params = {})
+	{
+		return this.fetchApi("POST", path, params);
+	}
+
 	async fetchApi(method, path, params = {}, secured = true)
 	{
 		if (!this.token() && secured)
@@ -36,17 +41,24 @@ class ApiConnection {
 			origin : "*",
 		});
 
-		return new Promise((resolve) =>
+		return new Promise((resolve, reject) =>
 		{
 			call
 				.then((response) =>
 				{
 					resolve(response.data);
 				})
-				.catch(() =>
+				.catch((error) =>
 				{
-					this.clearToken();
-					window.location.reload();
+					const status = error?.response?.status;
+					if (status === 401 || status === 403)
+					{
+						this.clearToken();
+						window.location.reload();
+						return;
+					}
+
+					reject(error?.response?.data ?? error);
 				});
 		});
 	}
