@@ -47,4 +47,48 @@ class EventController extends AbstractFOSRestController
 
         return $this->handleView($view);
     }
+
+    #[Rest\Route('/{id}', methods: [Request::METHOD_GET])]
+    #[OA\Get(
+        description: 'Get a single event details',
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(type: 'integer')
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: '200',
+                description: 'Return event details',
+                content: new OA\JsonContent(ref: new Model(type: Event::class))
+            ),
+            new OA\Response(response: '403', description: 'Forbidden'),
+            new OA\Response(response: '404', description: 'Not found'),
+        ]
+    )]
+    #[Rest\View()]
+    public function show(ManagerRegistry $doctrine, int $id): Response
+    {
+        $user = $this->getUser();
+
+        if (!$user instanceof User) {
+            return $this->handleView(View::create(['message' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED));
+        }
+
+        $event = $doctrine->getRepository(Event::class)->find($id);
+
+        if (!$event) {
+            return $this->handleView(View::create(['message' => 'Event not found'], Response::HTTP_NOT_FOUND));
+        }
+
+        if ($event->getCreator()?->getId() !== $user->getId()) {
+            return $this->handleView(View::create(['message' => 'Forbidden'], Response::HTTP_FORBIDDEN));
+        }
+
+        return $this->handleView(View::create($event));
+    }
+
 }
