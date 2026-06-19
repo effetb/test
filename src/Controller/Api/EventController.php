@@ -6,6 +6,7 @@ namespace App\Controller\Api;
 
 use App\Entity\Event;
 use App\Entity\User;
+use App\Enum\ColorEnum;
 use Doctrine\Persistence\ManagerRegistry;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
@@ -109,7 +110,7 @@ class EventController extends AbstractFOSRestController
                 properties: [
                     new OA\Property(property: 'title', type: 'string'),
                     new OA\Property(property: 'description', type: 'string'),
-                    new OA\Property(property: 'color', type: 'string', enum: Event::COLORS),
+                    new OA\Property(property: 'color', type: 'string', enum: ['rouge', 'vert', 'bleu']),
                 ]
             )
         ),
@@ -158,7 +159,7 @@ class EventController extends AbstractFOSRestController
         }
 
         if (array_key_exists('color', $payload)) {
-            $event->setColor((string) $payload['color']);
+            $event->setColor(ColorEnum::from((string) $payload['color']));
         }
 
         $violations = $validator->validate($event);

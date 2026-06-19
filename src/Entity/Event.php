@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\ColorEnum;
 use App\Repository\EventRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -11,7 +12,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: EventRepository::class)]
 class Event
 {
-    public const COLORS = ['rouge', 'vert', 'bleu'];
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -26,10 +26,9 @@ class Event
     #[Assert\NotBlank()]
     private ?string $description = null;
 
-    #[ORM\Column(length: 10)]
+    #[ORM\Column(length: 10, enumType: ColorEnum::class)]
     #[Assert\NotBlank()]
-    #[Assert\Choice(choices: self::COLORS)]
-    private ?string $color = null;
+    private ?ColorEnum $color = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $startDate = null;
@@ -69,12 +68,12 @@ class Event
         return $this;
     }
 
-    public function getColor(): ?string
+    public function getColor(): ?ColorEnum
     {
         return $this->color;
     }
 
-    public function setColor(string $color): static
+    public function setColor(ColorEnum $color): static
     {
         $this->color = $color;
 

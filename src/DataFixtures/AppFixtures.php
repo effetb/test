@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Event;
 use App\Entity\User;
+use App\Enum\ColorEnum;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -13,7 +14,7 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        $colors = ['rouge', 'vert', 'bleu'];
+        $colors = ColorEnum::cases();
         $generator = Factory::create('fr_FR');
         $populator = new Populator($generator, $manager);
         $populator->addEntity(User::class, 1, [ 'email' => 'admin@effetb.com', 'password' => 'admin']);
