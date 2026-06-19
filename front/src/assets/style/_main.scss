@@ -61,6 +61,30 @@ body
 	}
 }
 
+.event-color
+{
+	border-radius : 50%;
+	display       : inline-block;
+	height        : 10px;
+	margin-right  : 8px;
+	width         : 10px;
+
+	&--rouge
+	{
+		background : red;
+	}
+
+	&--vert
+	{
+		background : green;
+	}
+
+	&--bleu
+	{
+		background : blue;
+	}
+}
+
 .form-group
 {
 	display        : flex;
