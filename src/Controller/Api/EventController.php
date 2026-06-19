@@ -159,7 +159,14 @@ class EventController extends AbstractFOSRestController
         }
 
         if (array_key_exists('color', $payload)) {
-            $event->setColor(ColorEnum::from((string) $payload['color']));
+            try {
+                $event->setColor(ColorEnum::from((string) $payload['color']));
+            } catch (\ValueError) {
+                return $this->handleView(View::create([
+                    'message' => 'Validation failed',
+                    'errors' => [['field' => 'color', 'message' => 'Cette valeur doit être l\'un des choix proposés.']],
+                ], Response::HTTP_BAD_REQUEST));
+            }
         }
 
         $violations = $validator->validate($event);
