@@ -12,7 +12,7 @@
               #{{ item.id }} - {{ item.title }}
             </div>
             <div class="card__item__actions">
-
+              <router-link class="btn" :to="{ name: 'EventDetail', params: { id: item.id } }">Détails</router-link>
             </div>
           </div>
         </template>
