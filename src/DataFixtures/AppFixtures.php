@@ -13,6 +13,7 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
+        $colors = ['rouge', 'vert', 'bleu'];
         $generator = Factory::create('fr_FR');
         $populator = new Populator($generator, $manager);
         $populator->addEntity(User::class, 1, [ 'email' => 'admin@effetb.com', 'password' => 'admin']);
@@ -27,14 +28,15 @@ class AppFixtures extends Fixture
                 return $generator->dateTimeBetween('-2 months', 'now');
             },
             'endDate' => function ($insertedIds, $obj) use ($generator) {
-                // $obj est l'entité Event en cours de génération
                 $startDate = $obj->getStartDate();
 
-                // Générer une endDate entre startDate et +3 mois après startDate
                 return $generator->dateTimeBetween(
                     $startDate,
                     (clone $startDate)->modify('+2 months')
                 );
+            },
+            'color' => function () use ($colors, $generator) {
+                return $generator->randomElement($colors);
             },
         ]);
         $populator->execute();
@@ -50,14 +52,15 @@ class AppFixtures extends Fixture
                 return $generator->dateTimeBetween('-2 months', 'now');
             },
             'endDate' => function ($insertedIds, $obj) use ($generator) {
-                // $obj est l'entité Event en cours de génération
                 $startDate = $obj->getStartDate();
 
-                // Générer une endDate entre startDate et +3 mois après startDate
                 return $generator->dateTimeBetween(
                     $startDate,
                     (clone $startDate)->modify('+2 months')
                 );
+            },
+            'color' => function () use ($colors, $generator) {
+                return $generator->randomElement($colors);
             },
         ]);
         $populator->execute();
