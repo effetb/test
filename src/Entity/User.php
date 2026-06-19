@@ -42,6 +42,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank()]
+    #[Ignore]
     private ?string $password = null;
 
     public function __construct()

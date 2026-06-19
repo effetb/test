@@ -17,7 +17,8 @@
   "dependencies"   : {
     "pinia"     : "^3.0.4",
     "vue"       : "^3.5.26",
-    "vue-router": "^4.6.4"
+    "vue-router": "^4.6.4",
+    "axios"     : "^1.13.2"
   },
   "devDependencies": {
     "@vitejs/plugin-vue"      : "^6.0.3",
@@ -25,7 +26,6 @@
     "jsdom"                   : "^27.4.0",
     "prettier"                : "3.7.4",
     "vite"                    : "^7.3.0",
-    "axios"                   : "^1.13.2",
     "vite-plugin-vue-devtools": "^8.0.5",
     "vitest"                  : "^4.0.16",
     "sass"                    : "^1.56.2",
