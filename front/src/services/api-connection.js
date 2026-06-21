@@ -1,90 +1,83 @@
 import axios from "axios";
 
 class ApiConnection {
-	get(path)
-	{
-		return this.fetchApi("GET", path);
-	}
+    get(path) {
+        return this.fetchApi("GET", path);
+    }
 
-	async fetchApi(method, path, params = {}, secured = true)
-	{
-		if (!this.token() && secured)
-		{
-			await this.login();
-		}
+    post(path, params = {}) {
+        return this.fetchApi("POST", path, params);
+    }
 
-		const url   = import.meta.env.VITE_API_URL + "/" + path;
-		let headers = {};
+    async fetchApi(method, path, params = {}, secured = true) {
+        if (!this.token() && secured) {
+            await this.login();
+        }
 
-		if (params)
-		{
-			headers = {
-				"Content-Type": "application/json;charset=utf-8",
-			};
-		}
+        const url = import.meta.env.VITE_API_URL + "/" + path;
 
-		if (secured && this.token())
-		{
-			headers["Authorization"] = "Bearer " + this.token();
-		}
+        let headers = {
+            "Content-Type": "application/json;charset=utf-8",
+        };
 
-		const call = axios({
-			method : method,
-			url    : url,
-			data   : params,
-			headers: headers,
-			origin : "*",
-		});
+        if (secured && this.token()) {
+            headers["Authorization"] = "Bearer " + this.token();
+        }
 
-		return new Promise((resolve) =>
-		{
-			call
-				.then((response) =>
-				{
-					resolve(response.data);
-				})
-				.catch(() =>
-				{
-					this.clearToken();
-					window.location.reload();
-				});
-		});
-	}
+        try {
+            const response = await axios({
+                method: method,
+                url: url,
+                data: params,
+                headers: headers,
+            });
 
-	login()
-	{
-		const credentials = {
-			username: import.meta.env.VITE_API_USERNAME,
-			password: import.meta.env.VITE_API_PWD,
-		};
-		return new Promise((resolve) =>
-		{
-			apiConnection
-				.fetchApi("post", "login_check", credentials, false)
-				.then((data) =>
-				{
-					if (data.token)
-					{
-						window.localStorage.setItem("token", data.token);
-						resolve(data);
-					}
-				})
-				.catch((res) =>
-				{
-					resolve(res);
-				});
-		});
-	}
+            return response.data;
 
-	token()
-	{
-		return window.localStorage.getItem("token");
-	}
+        } catch (error) {
+            console.error("API Error:", error);
 
-	clearToken()
-	{
-		window.localStorage.removeItem("token");
-	}
+            // ❌ NO reload infinito
+            // Solo limpiar token si es realmente inválido
+            if (error?.response?.status === 401) {
+                this.clearToken();
+            }
+
+            // devolvemos error controlado
+            throw error;
+        }
+    }
+
+    login() {
+        const credentials = {
+            username: import.meta.env.VITE_API_USERNAME,
+            password: import.meta.env.VITE_API_PWD,
+        };
+
+        return new Promise((resolve, reject) => {
+            this.fetchApi("post", "api/login_check", credentials, false)
+                .then((data) => {
+                    if (data?.token) {
+                        window.localStorage.setItem("token", data.token);
+                        resolve(data);
+                    } else {
+                        reject("No token received");
+                    }
+                })
+                .catch((err) => {
+                    console.error("Login error:", err);
+                    reject(err);
+                });
+        });
+    }
+
+    token() {
+        return window.localStorage.getItem("token");
+    }
+
+    clearToken() {
+        window.localStorage.removeItem("token");
+    }
 }
 
 export const apiConnection = new ApiConnection();

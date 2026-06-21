@@ -33,6 +33,10 @@ class Event
     #[ORM\ManyToOne(inversedBy: 'events')]
     private ?User $creator = null;
 
+    #[ORM\Column(length: 20, nullable: true)]
+    #[Assert\Length(max: 20)]
+    private ?string $color = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -94,6 +98,17 @@ class Event
     public function setCreator(?User $creator): static
     {
         $this->creator = $creator;
+
+        return $this;
+    }
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    public function setColor(?string $color): static
+    {
+        $this->color = $color;
 
         return $this;
     }
