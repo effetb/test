@@ -13,53 +13,44 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        $generator = Factory::create('fr_FR');
-        $populator = new Populator($generator, $manager);
-        $populator->addEntity(User::class, 1, [ 'email' => 'admin@effetb.com', 'password' => 'admin']);
-        $populator->addEntity(Event::class, 10, [
-            'title' => function () use ($generator) {
-                return $generator->realText(100);
-            },
-            'description' => function () use ($generator) {
-                return $generator->realText(5000);
-            },
-            'startDate' => function () use ($generator) {
-                return $generator->dateTimeBetween('-2 months', 'now');
-            },
-            'endDate' => function ($insertedIds, $obj) use ($generator) {
-                // $obj est l'entité Event en cours de génération
-                $startDate = $obj->getStartDate();
+        $faker = Factory::create();
 
-                // Générer une endDate entre startDate et +3 mois après startDate
-                return $generator->dateTimeBetween(
-                    $startDate,
-                    (clone $startDate)->modify('+2 months')
-                );
-            },
-        ]);
-        $populator->execute();
-        $populator->addEntity(User::class, 3, [ 'password' => 'admin']);
-        $populator->addEntity(Event::class, 50, [
-            'title' => function () use ($generator) {
-                return $generator->realText(100);
-            },
-            'description' => function () use ($generator) {
-                return $generator->realText(5000);
-            },
-            'startDate' => function () use ($generator) {
-                return $generator->dateTimeBetween('-2 months', 'now');
-            },
-            'endDate' => function ($insertedIds, $obj) use ($generator) {
-                // $obj est l'entité Event en cours de génération
-                $startDate = $obj->getStartDate();
+        // 🔥 OBTENER USER (IMPORTANTE)
+        $user = $manager->getRepository(User::class)->find(1);
 
-                // Générer une endDate entre startDate et +3 mois après startDate
-                return $generator->dateTimeBetween(
-                    $startDate,
-                    (clone $startDate)->modify('+2 months')
-                );
-            },
-        ]);
-        $populator->execute();
+        if (!$user) {
+            throw new \Exception("No user found with ID 1. Create a user first.");
+        }
+
+        for ($i = 0; $i < 30; $i++) {
+
+            $event = new Event();
+
+            $event->setTitle($faker->sentence(3));
+            $event->setDescription($faker->text(200));
+
+            // 🎨 COLOR VALIDO
+            $event->setColor($faker->randomElement([
+                'rouge',
+                'vert',
+                'bleu'
+            ]));
+
+            // 👤 FIX CRÍTICO (ESTO ARREGLA TU PROBLEMA)
+            $event->setCreator($user);
+
+            // 📅 FECHAS (si tu entidad las tiene)
+            if (method_exists($event, 'setStartDate')) {
+                $start = $faker->dateTimeBetween('-2 months', 'now');
+                $end = $faker->dateTimeBetween($start, '+2 months');
+
+                $event->setStartDate($start);
+                $event->setEndDate($end);
+            }
+
+            $manager->persist($event);
+        }
+
+        $manager->flush();
     }
 }
