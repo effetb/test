@@ -11,6 +11,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: EventRepository::class)]
 class Event
 {
+    //Added const to set up only this 3 options
+    public const COLORS = ['rouge', 'vert', 'bleu'];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -32,6 +35,12 @@ class Event
 
     #[ORM\ManyToOne(inversedBy: 'events')]
     private ?User $creator = null;
+
+    //set up a string of lenght 10, required and only with 3 choices
+    #[ORM\Column(length: 10)]
+    #[Assert\NotBlank()]
+    #[Assert\Choice(choices: self::COLORS)]
+    private ?string $color = null;
 
     public function getId(): ?int
     {
@@ -94,6 +103,19 @@ class Event
     public function setCreator(?User $creator): static
     {
         $this->creator = $creator;
+
+        return $this;
+    }
+
+    //created setters and getters
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    public function setColor(string $color): static
+    {
+        $this->color = $color;
 
         return $this;
     }

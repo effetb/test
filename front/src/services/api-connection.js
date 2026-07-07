@@ -6,6 +6,11 @@ class ApiConnection {
 		return this.fetchApi("GET", path);
 	}
 
+	post(path, params)
+	{
+		return this.fetchApi("POST", path, params);
+	}
+
 	async fetchApi(method, path, params = {}, secured = true)
 	{
 		if (!this.token() && secured)

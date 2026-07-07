@@ -36,6 +36,10 @@ class AppFixtures extends Fixture
                     (clone $startDate)->modify('+2 months')
                 );
             },
+            //add to get random color to fixture
+            'color' => function () use ($generator) {
+                return $generator->randomElement(Event::COLORS);
+            },
         ]);
         $populator->execute();
         $populator->addEntity(User::class, 3, [ 'password' => 'admin']);
@@ -58,6 +62,9 @@ class AppFixtures extends Fixture
                     $startDate,
                     (clone $startDate)->modify('+2 months')
                 );
+            },
+            'color' => function () use ($generator) {
+                return $generator->randomElement(Event::COLORS);
             },
         ]);
         $populator->execute();
