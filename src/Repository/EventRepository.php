@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Event;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -14,6 +15,27 @@ class EventRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Event::class);
+    }
+
+    /**
+     * @return Event[] Returns events created by the given user, starting within the current month
+     */
+    public function findCurrentMonthByCreator(User $creator): array
+    {
+        $firstDayOfMonth = new \DateTime('first day of this month midnight');
+        $firstDayOfNextMonth = new \DateTime('first day of next month midnight');
+
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.creator = :creator')
+            ->andWhere('e.startDate >= :from')
+            ->andWhere('e.startDate < :to')
+            ->setParameter('creator', $creator)
+            ->setParameter('from', $firstDayOfMonth)
+            ->setParameter('to', $firstDayOfNextMonth)
+            ->orderBy('e.startDate', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
     }
 
     //    /**
